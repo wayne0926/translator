@@ -5,6 +5,16 @@ const fetch = require('node-fetch'); // Using node-fetch v2
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Enable debug mode if DEBUG_MODE is 'true' in .env
+const DEBUG_MODE = process.env.DEBUG_MODE === 'true';
+
+// Custom debug logger
+const debugLog = (...args) => {
+    if (DEBUG_MODE) {
+        console.log(...args);
+    }
+};
+
 app.use(express.json()); // Middleware to parse JSON bodies
 app.use(express.static('dist')); // Serve static files from the 'dist' directory
 
@@ -16,9 +26,11 @@ app.post('/api/translate', async (req, res) => {
     const { text, source_lang, target_lang } = req.body;
 
     if (!OPENROUTER_API_KEY) {
+        console.error('OpenRouter API key not configured.'); // Always log critical errors
         return res.status(500).json({ error: 'OpenRouter API key not configured.' });
     }
     if (!text || !target_lang) {
+        debugLog('Missing required fields:', { text, target_lang });
         return res.status(400).json({ error: 'Missing required fields: text, target_lang' });
     }
 
@@ -65,7 +77,7 @@ Output only the translation text, nothing else:
 ${promptAddendum}`;
 
     try {
-        console.log(`Sending to OpenRouter: Model=anthropic/claude-3-haiku, Prompt Snippet=${prompt.substring(0, 100)}...`);
+        debugLog(`Sending to OpenRouter: Model=anthropic/claude-3-haiku, Prompt Snippet=${prompt.substring(0, 100)}...`);
 
         const response = await fetch(OPENROUTER_API_URL, {
             method: 'POST',
@@ -92,10 +104,10 @@ ${promptAddendum}`;
         });
 
         const data = await response.json();
-        console.log('Received from OpenRouter:', JSON.stringify(data, null, 2));
+        debugLog('Received from OpenRouter:', JSON.stringify(data, null, 2));
 
         if (!response.ok) {
-            console.error('OpenRouter API Error:', data);
+            console.error('OpenRouter API Error:', data); // Always log critical errors
             // Try to extract a more specific error message if available
             const errorMessage = data?.error?.message || `HTTP error! status: ${response.status}`;
             throw new Error(errorMessage);
@@ -108,7 +120,7 @@ ${promptAddendum}`;
         const rawTranslation = data?.choices?.[0]?.message?.content?.trim();
 
         if (!rawTranslation) {
-            console.error('Could not extract translation from OpenRouter response:', data);
+            console.error('Could not extract translation from OpenRouter response:', data); // Always log critical errors
             throw new Error('Failed to parse translation from API response.');
         }
 
@@ -122,17 +134,18 @@ ${promptAddendum}`;
         translation = translation.split(/(\n\n|\n)(Note:|注:|备注:|PS:|说明:|Explanation:)/i)[0].trim();
         
         // If the model wrapped the translation in quotes, remove them
-        translation = translation.replace(/^["'](.*)["']$/s, '$1').trim();
+        translation = translation.replace(/^["'](.*)["']$/s, '').trim();
 
         res.json({ translation: translation });
 
     } catch (error) {
-        console.error('Error in /api/translate:', error);
+        console.error('Error in /api/translate:', error); // Always log critical errors
         res.status(500).json({ error: error.message || 'An internal server error occurred.' });
     }
 });
 
 // --- Start Server --- 
 app.listen(port, () => {
-    console.log(`Server listening at http://localhost:${port}`);
-}); 
+    console.log(`Server listening at http://localhost:${port}`); // Always log server start
+});
+ 

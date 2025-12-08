@@ -18,6 +18,7 @@ PWA ready, Dark Mode, TTS support, auto-saves preferences.
     Add `.env` in the root:
     ```env
     OPENROUTER_API_KEY=your_key_here
+    DEBUG_MODE=false # Set to 'true' for verbose logging
     ```
 
 3.  **Run (Production)**:
