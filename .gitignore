@@ -1,16 +1,23 @@
 # Node.js
 node_modules/
+**/node_modules/
 npm-debug.log
 .env
+.env.local
+.env.*.local
 
 # Build artifacts
 dist/
+**/dist/
 build/
+# Svelte specific (if using SvelteKit or other frameworks)
+.svelte-kit/
+.svelte-artifact/
 
 # IDE and OS files
 .DS_Store
 .vscode/
 
-# Logs
+# Logs and temporary files
 *.log
 tmp/

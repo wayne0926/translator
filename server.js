@@ -6,7 +6,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json()); // Middleware to parse JSON bodies
-app.use(express.static('.')); // Serve static files (HTML, CSS, JS) from the root directory
+app.use(express.static('dist')); // Serve static files from the 'dist' directory
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
