@@ -232,7 +232,7 @@
               {#if sourceText}
                 <button 
                   class="p-2.5 md:p-2 rounded-full active:bg-gray-100 dark:active:bg-gray-800 md:hover:bg-gray-100 dark:md:hover:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-black dark:hover:text-white transition-colors"
-                  on:click={() => sourceText = ''}
+                  on:click={() => { sourceText = ''; targetText = ''; }}
                   title="Clear"
                 >
                   <X class="w-5 h-5" />
