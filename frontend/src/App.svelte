@@ -262,7 +262,7 @@
         {/if}
         
         <textarea
-          bind:value={targetText}
+          value={targetText}
           class="flex-1 w-full p-5 md:p-8 text-xl md:text-3xl bg-transparent resize-none focus:outline-none text-gray-800 dark:text-gray-200 placeholder-gray-300 dark:placeholder-gray-600 leading-relaxed"
           placeholder="Translation"
           readonly
